@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <title>订单页</title>
+</head>
+<body>
+{#    1.在页面显示收件人信息一个单选框选着地址 商品名称 商品价格 商品数量放在一个输入框 #}
+    {% for add in goods_address %}
+        <input type="radio" name="1" _ads="{{ add.ads }}"
+               _phone="{{ add.phone }}" _aname="{{ add.aname }}">
+        {{ add.ads }}
+        {{ add.phone }}
+        {{ add.aname }}
+        <br>
+    {% endfor %}
+    {% for g in cart_goods %}
+        <input type="checkbox" _name="{{ g.goods.title }}"
+               _price="{{ g.goods.price }}">
+        {{ g.goods.title }}
+        {{ g.goods.price }}
+        <input type="text" value="{{ g.ccount }}"
+                >
+        <br>
+    {% endfor %}
+    <button onclick="addaddress()">确认订单</button>
+
+{#    2.获取订单号、订单细节、收件人姓名、收件人电话、地址、总数、总价#}
+    <script src="{% static 'js/jquery-1.11.3.js' %}"></script>
+    <script>
+        function addaddress(){
+            var carts=[];
+            $.each($('input:checkbox:checked'),function () {
+                    var cartg = {};
+                    cartg['name']=$(this).attr('_name');
+                    cartg['price']=$(this).attr('_price');
+                    cartg['count']=$(this).next('input').attr('value');
+                    carts.push(cartg);
+                }
+            );
+            console.log(carts)
+            $.ajax({
+                "url":"/cart/add_order/",
+                "type":"POST",
+                "data":{
+                    "csrfmiddlewaretoken":'{{ csrf_token }}',
+                    "desc":JSON.stringify(carts),
+                    "adsname":$('input:radio:checked').attr('_aname'),
+                    "adsphone":$('input:radio:checked').attr('_phone'),
+                    "ads":$('input:radio:checked').attr('_ads'),
+                    },
+                "datatype":"json",
+                success:function (data){
+                    console.log(data)
+                },
+                error:function (error) {
+                    console.log(error)
+                }
+
+            });
+        }
+    </script>
+</body>
+</html>

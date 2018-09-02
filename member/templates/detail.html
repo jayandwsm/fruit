@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <title>商品详情</title>
+</head>
+<body>
+    <h1>详情页</h1>
+    <br>
+    {{ good.title }}
+    {{ good.price }}
+    {{ good.unit }}
+    {{ good.desc }}
+    <img src="{% static good.picture %}">
+    <br>
+    <button onclick="addcart({{ good.id }})">添加购物车</button>
+    <script src="{% static 'js/jquery-1.11.3.js' %}"></script>
+    <script>
+    function addcart(goodid){
+        $.ajax({
+            "url":"/cart/addcart/",
+            "type":"GET",
+            "data":{"goodid":goodid,"gcount":1},
+            "datatype":"json",
+
+            success:function (data){
+                location.href="/cart/order";
+            },
+            error:function (error){
+                console.log(error);
+            },
+        });
+    }
+    </script>
+
+
+
+
+</body>
+</html>

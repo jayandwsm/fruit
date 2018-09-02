@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+</head>
+<body>
+    {% if request.session.uname %}
+        <h1>欢迎{{ request.session.uname }}来到我的首页</h1>
+        <a href="{% url 'loginout' %}">切换账号</a>
+    {% else %}
+        <h1>欢迎来到首页</h1>
+        <a href="{% url 'login' %}">登录</a>
+        <a href="{% url 'regist' %}">注册</a>
+    {% endif %}
+    <br>
+    {% for goodstype in goods_list %}
+        {{ goodstype.type }}
+        <br>
+        {% for goods in goodstype.goods %}
+            <a href="{{ goods.get_url }}">{{ goods.title }}</a>
+            {{ goods.price }}
+        {% endfor %}
+        <br>
+    {% endfor %}
+</body>
+</html>
